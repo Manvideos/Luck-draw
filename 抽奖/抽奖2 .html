@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>抽奖</title>
+		<script src="jquery-3.1.1.js" type="text/javascript" charset="utf-8"></script>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			body {
+				background: url(images/body.png) no-repeat;
+				background-size: 100% 130%;
+				color: #fff;
+			}
+			
+			audio {
+				visibility: hidden;
+			}
+			
+			.div1 {
+				width: 500px;
+				height: 400px;
+				margin: auto;
+				margin-top: 300px;
+				background: url(images/main2.png) no-repeat;
+				background-size: 100% 90%;
+				position: relative;
+			}
+			
+			.ulList {
+				display: flex;
+				flex-flow: row;
+				list-style: none;
+				position: absolute;
+				top: 47px;
+				left: 50px;
+			}
+			
+			.list {
+				width: 100px;
+				color: darkred;
+				height: 150px;
+				text-align: center;
+				font-size: 90px;
+				line-height: 150px;
+				background: #dfdfdf;
+				margin-right: 20px;
+			}
+			
+			.Play {
+				width: 230px;
+				height: 80px;
+				position: absolute;
+				left: 100px;
+				top: 220px;
+				cursor: pointer;
+				background: none;
+				border: none;
+				outline: none;
+			}
+			
+			.result {
+				position: fixed;
+				right: 80px;
+				top: 41%;
+				width: 300px;
+				height: 430px;
+				font-size: 20px;
+			}
+			
+			h2 {
+				font-size: 20px;
+			}
+			
+			h2 span:nth-child(1) {
+				margin-left: 20px;
+			}
+			
+			h2 span:nth-child(2) {
+				margin: 0 35px;
+			}
+			
+			.div2 {
+				width: 340px;
+				height: 400px;
+				overflow: auto;
+				text-align: center;
+				clear: both;
+			}
+			
+			table {
+				width: 105px;
+				float: left;
+			}
+			
+			td {
+				width: 105px;
+				height: 30px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<audio src="张国荣 - 当爱已成往事（霸王别姬 电影插曲）.mp3" loop autoplay></audio>
+		<div class="div1">
+			<ul class="ulList">
+				<li class="list grou1">0</li>
+				<li class="list grou2">0</li>
+				<li class="list grou3">0</li>
+			</ul>
+			<button onclick="cli()" class="Play"></button>
+		</div>
+		<div class="result">
+			<h2>
+				<span>一等奖</span>
+				<span>二等奖</span>
+				<span>三等奖</span>
+			</h2>
+			<div class="div2">
+				<table border="0" cellspacing="0" cellpadding="5px"></table>
+				<table border="0" cellspacing="0" cellpadding="5px"></table>
+				<table border="0" cellspacing="0" cellpadding="5px"></table>
+			</div>
+		</div>
+		<button onclick="Reset()">点击清空</button>
+		<script>
+			var num;
+			var Number;
+			var Numleng
+			var zero1 = "0";
+			var zero2 = "00";
+			var timer;
+			var timer1;
+			var n;
+			var str;
+			var t = 10;
+			var mytime;
+			var a = 0;
+			var flag = false;
+			var count = 0;
+
+			//获取的页面数据
+			var arr = [];
+			var thisUrl = document.URL;
+
+			var a1 = thisUrl.split("?")[1];
+			console.log(a1);
+
+			var b1 = a1.split("&");
+			console.log(b1);
+
+			var d1 = "";
+			for(var i = 0; i < b1.length; i++) {
+				c1 = decodeURIComponent(b1[i].split("=")[1]);
+				console.log(b1);
+				arr.push(c1);
+			}
+
+			function cli() {
+
+				Number = arr[0];
+				if(Number == "") {
+					alert("请输入人数")
+				} else if(Number > 999) {
+					alert("人数要小于1000哦！")
+				} else {
+					$(".Play").attr("disabled", "disabled");
+
+					function arr2(N) {
+						num = parseInt(Math.random() * N + 1000);
+						return num;
+					} //随机停止的时间
+					function arr1(N) {
+						num = parseInt(Math.random() * N + 1);
+						return num + "";
+					} //随机抽奖人数
+
+					timer = setInterval(function() {
+						n = arr1(Number);
+						Numleng = n.length;
+
+						if(Numleng == 1) {
+							n = zero2 + n;
+							$(".grou1").html(n[0])
+							$(".grou2").html(n[1])
+							$(".grou3").html(n[2])
+
+						} else if(Numleng == 2) {
+							n = zero1 + n;
+							$(".grou1").html(n[0])
+							$(".grou2").html(n[1])
+							$(".grou3").html(n[2])
+						} else {
+							$(".grou1").html(n[0])
+							$(".grou2").html(n[1])
+							$(".grou3").html(n[2])
+						}
+
+					}, t);
+
+					timer1 = setTimeout(function() {
+						stopTime(); //两秒后停止随机得出随机数
+					}, 2000);
+
+				}
+
+			}
+
+			stopTime = function() {
+				clearInterval(timer); //停止随机得出随机数
+				clearTimeout(timer1);
+				$(".Play").removeAttr("disabled", "disabled");
+				sEt(); //执行判断得方法
+
+			}
+
+			function Reset() { //清空本都储存
+				for(var i = 0; i < localStorage.length + 1; i++) {
+					console.log(localStorage.getItem(localStorage.key(i)));
+				}
+
+				localStorage.clear();
+			}
+
+			function sEt() {
+				var localeng = localStorage.length;
+
+				for(var i = 0; i < localeng; i++) {
+					if(n == localStorage.getItem(localStorage.key(i))) {
+						flag = true;
+						break;
+					}
+				}
+
+				add();
+			}
+
+			function add() {
+
+				if(flag == false) {
+					var myDate = new Date();
+					mytime = myDate.toLocaleTimeString();
+
+					count++;
+
+					if(count <= arr[1]) { //判断是几等奖
+						$("table").eq(0).append("<tr><td>" + n + "</td></tr>");
+						localStorage.setItem('one' + mytime, n);
+
+					} else if(count > arr[1] && count <= parseInt(arr[2]) + parseInt(arr[1])) {
+
+						$("table").eq(1).append("<tr><td>" + n + "</td></tr>");
+						localStorage.setItem('two' + mytime, n);
+
+					} else if(count > parseInt(arr[2]) + parseInt(arr[1]) && count <= parseInt(arr[2]) + parseInt(arr[1]) + parseInt(arr[3])) {
+						$("table").eq(2).append("<tr><td>" + n + "</td></tr>");
+						localStorage.setItem('sev' + mytime, n);
+
+						if(count == parseInt(arr[2]) + parseInt(arr[1]) + parseInt(arr[3])) {
+							$(".Play").attr("disabled", "disabled");
+						}
+
+					}
+
+				} else { //否则重新执行cli
+					flag = false;
+					cli();
+				}
+			}
+
+			window.onload = function() { //刷新页面时获取的数据
+				for(var i = 0; i < localStorage.length; i++) {
+					if(localStorage.key(i) != "") {
+						if(localStorage.key(i).substr(0, 3) == "one") {
+							$("table").eq(0).append("<tr><td>" + localStorage.getItem(localStorage.key(i)) + "</td></tr>");
+						}
+						if(localStorage.key(i).substr(0, 3) == "two") {
+							$("table").eq(1).append("<tr><td>" + localStorage.getItem(localStorage.key(i)) + "</td></tr>");
+						}
+						if(localStorage.key(i).substr(0, 3) == "sev") {
+							$("table").eq(2).append("<tr><td>" + localStorage.getItem(localStorage.key(i)) + "</td></tr>");
+						}
+					}
+				}
+			}
+
+		/*  window.onload = function(){ //cookie储存的方式
+				var id = $("table").eq(1).find("td").text();;
+				var name = $("table").eq(1).find("td").text();
+				var cla = $("table").eq(2).find("td").text();
+				 console.log(id);
+				 console.log(name);
+				 console.log(cla);
+			　　 	setCookie('33',"111",1);
+				setCookie('331',"111",1);
+				setCookie('332',"111",1);
+			} 
+			
+			function setCookie(c_name,value,expiredays){
+				var exdate=new Date();
+				exdate.setDate(exdate.getDate()+expiredays);
+				document.cookie=c_name+ "=" +escape(value)+
+				((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
+			}*/
+		</script>
+	</body>
+
+</html>

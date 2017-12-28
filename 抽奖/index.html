@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>输入框</title>
+		<script src="jquery-3.1.1.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<p>输入总人数<input type="number" min="1"/></p>
+		<p>一等奖<input type="number" min="0"/> </p>
+		<p>二等奖<input type="number" min="0"/> </p>
+		<p>三等奖<input type="number" min="0"/> </p>
+		<button>提交</button>
+		<script type="text/javascript">
+			var inp=document.querySelectorAll("input");console.log(inp)
+			$("button").click(function(){
+				var str="";
+				var flag=true;
+				var num=parseInt(inp[1].value)+parseInt(inp[2].value)+parseInt(inp[3].value)
+				for(var i=0;i<inp.length;i++){
+					str+="name="+inp[i].value+"&";
+					if(inp[i].value=="" || parseInt(inp[0].value)<=num){
+						alert("请完善信息或输入与总人数不对应");
+						flag=false;
+						break;
+					}
+				}
+				
+				if(flag){
+					window.location.href="抽奖2 .html?"+str.substr(0,str.length-1);
+				}
+			})
+		</script>
+	</body>
+</html>
